@@ -81,6 +81,22 @@ main(int argc, char *argv[]) {
 				    address, host.c_str(), port.c_str(), number, res ? 1 : 0);
 				argc -= 1;
 				argv += 1;
+			} else if (cmd == "write_coils")  {
+				if (argc < 2)
+					usage();
+				number = atol(argv[0]);
+				SArray<bool> vals;
+				char *pos = argv[1];
+				char *tmpstr;
+				int i = 0;
+				while ((tmpstr = strsep(&pos, ":")) != NULL) {
+					if (*tmpstr != '\0') {
+						vals[i++] = atol(tmpstr);
+					}
+				}
+				mb.write_coils(address, number, vals);
+				argc -= 2;
+				argv += 2;
 			} else if (cmd == "write_coil")  {
 				if (argc < 2)
 					usage();
@@ -113,6 +129,22 @@ main(int argc, char *argv[]) {
 				number = atol(argv[0]);
 				val = atol(argv[1]);
 				mb.write_register(address, number, val);
+				argc -= 2;
+				argv += 2;
+			} else if (cmd == "write_registers")  {
+				if (argc < 2)
+					usage();
+				number = atol(argv[0]);
+				SArray<uint16_t> vals;
+				char *pos = argv[1];
+				char *tmpstr;
+				int i = 0;
+				while ((tmpstr = strsep(&pos, ":")) != NULL) {
+					if (*tmpstr != '\0') {
+						vals[i++] = atol(tmpstr);
+					}
+				}
+				mb.write_registers(address, number, vals);
 				argc -= 2;
 				argv += 2;
 			} else if (cmd == "identification")  {
@@ -156,8 +188,10 @@ usage(void) {
 	printf(" read_input inputnumber\n");
 	printf(" read_coil coilnumber\n");
 	printf(" write_coil coilnumber value\n");
+	printf(" write_coils coilnumber value1:value2[:value3[...]]\n");
 	printf(" read_input_register registernumber value\n");
 	printf(" read_holding_register registernumber value\n");
+	printf(" write_registers registernumber value1:value2[:value3[...]]\n");
 	printf(" write_register registernumber value\n");
 	printf(" identification stringnumber\n");
 	printf("  string 0 vendor\n");
