@@ -1,0 +1,19 @@
+mb_tcpclient 127.0.0.1 2000 0 write_coil 0 1
+mb_tcpclient 127.0.0.1 2000 0 write_coil 0 0
+mb_tcpclient 127.0.0.1 2000 0 write_coil 1 1
+mb_tcpclient 127.0.0.1 2000 0 write_coil 1 0
+mb_tcpclient 127.0.0.1 2000 0 write_coil 2 1
+mb_tcpclient 127.0.0.1 2000 0 write_coil 2 0
+mb_tcpclient 127.0.0.1 2000 0 write_coil 3 1
+mb_tcpclient 127.0.0.1 2000 0 write_coil 3 0
+mb_tcpclient 127.0.0.1 2000 0 write_coil 4 1
+mb_tcpclient 127.0.0.1 2000 0 write_coil 4 0
+mb_tcpclient 127.0.0.1 2000 0 write_coil 5 1
+mb_tcpclient 127.0.0.1 2000 0 write_coil 5 0
+
+mb_tcpclient 127.0.0.1 2000 0 write_coil 0 0
+mb_tcpclient 127.0.0.1 2000 0 write_coil 1 0
+mb_tcpclient 127.0.0.1 2000 0 write_coil 2 0
+mb_tcpclient 127.0.0.1 2000 0 write_coil 3 0
+mb_tcpclient 127.0.0.1 2000 0 write_coil 4 0
+mb_tcpclient 127.0.0.1 2000 0 write_coil 5 0
