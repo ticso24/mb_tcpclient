@@ -99,7 +99,7 @@ main(int argc, char *argv[]) {
 				count = atol(argv[1]);
 				SArray<bool> vals;
 				vals = mb.read_coils(address, number, count);
-				printf("%i@[%s]:%s inputs %i=",
+				printf("%i@[%s]:%s coils %i=",
 				    address, host.c_str(), port.c_str(), number);
 				for (i = 0; i <= vals.max; i++) {
 					printf("%i", vals[i] ? 1 : 0);
