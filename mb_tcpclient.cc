@@ -42,6 +42,8 @@ main(int argc, char *argv[]) {
 	uint8_t address;
 	uint16_t number;
 	uint16_t val;
+	uint16_t count;
+	int i;
 	String host;
 	String port;
 	String cmd;
@@ -63,7 +65,25 @@ main(int argc, char *argv[]) {
 		argv += 2;
 
 		try {
-			if (cmd == "read_input")  {
+			if (cmd == "read_inputs")  {
+				if (argc < 2)
+					usage();
+				number = atol(argv[0]);
+				count = atol(argv[1]);
+				SArray<bool> vals;
+				vals = mb.read_discrete_inputs(address, number, count);
+				printf("%i@[%s]:%s inputs %i=",
+				    address, host.c_str(), port.c_str(), number);
+				for (i = 0; i <= vals.max; i++) {
+					printf("%i", vals[i] ? 1 : 0);
+					if (i != vals.max) {
+						printf(":");
+					}
+				}
+				printf("\n");
+				argc -= 2;
+				argv += 2;
+			} else if (cmd == "read_input")  {
 				if (argc < 1)
 					usage();
 				number = atol(argv[0]);
@@ -72,6 +92,24 @@ main(int argc, char *argv[]) {
 				    address, host.c_str(), port.c_str(), number, res ? 1 : 0);
 				argc -= 1;
 				argv += 1;
+			} else if (cmd == "read_coils")  {
+				if (argc < 2)
+					usage();
+				number = atol(argv[0]);
+				count = atol(argv[1]);
+				SArray<bool> vals;
+				vals = mb.read_coils(address, number, count);
+				printf("%i@[%s]:%s inputs %i=",
+				    address, host.c_str(), port.c_str(), number);
+				for (i = 0; i <= vals.max; i++) {
+					printf("%i", vals[i] ? 1 : 0);
+					if (i != vals.max) {
+						printf(":");
+					}
+				}
+				printf("\n");
+				argc -= 2;
+				argv += 2;
 			} else if (cmd == "read_coil")  {
 				if (argc < 1)
 					usage();
@@ -105,6 +143,24 @@ main(int argc, char *argv[]) {
 				mb.write_coil(address, number, val);
 				argc -= 2;
 				argv += 2;
+			} else if (cmd == "read_input_registers")  {
+				if (argc < 2)
+					usage();
+				number = atol(argv[0]);
+				count = atol(argv[1]);
+				SArray<uint16_t> vals;
+				vals = mb.read_input_registers(address, number, count);
+				printf("%i@[%s]:%s inputs %i=",
+				    address, host.c_str(), port.c_str(), number);
+				for (i = 0; i <= vals.max; i++) {
+					printf("%i", vals[i]);
+					if (i != vals.max) {
+						printf(":");
+					}
+				}
+				printf("\n");
+				argc -= 2;
+				argv += 2;
 			} else if (cmd == "read_input_register")  {
 				if (argc < 1)
 					usage();
@@ -114,6 +170,24 @@ main(int argc, char *argv[]) {
 				    address, host.c_str(), port.c_str(), number, res);
 				argc -= 1;
 				argv += 1;
+			} else if (cmd == "read_holding_registers")  {
+				if (argc < 2)
+					usage();
+				number = atol(argv[0]);
+				count = atol(argv[1]);
+				SArray<uint16_t> vals;
+				vals = mb.read_holding_registers(address, number, count);
+				printf("%i@[%s]:%s inputs %i=",
+				    address, host.c_str(), port.c_str(), number);
+				for (i = 0; i <= vals.max; i++) {
+					printf("%i", vals[i]);
+					if (i != vals.max) {
+						printf(":");
+					}
+				}
+				printf("\n");
+				argc -= 2;
+				argv += 2;
 			} else if (cmd == "read_holding_register")  {
 				if (argc < 1)
 					usage();
@@ -186,11 +260,15 @@ usage(void) {
 
 	printf("usage: mb_tcpclient ip port slaveaddress cmd [cmddata] \n");
 	printf(" read_input inputnumber\n");
+	printf(" read_inputs inputnumber count\n");
 	printf(" read_coil coilnumber\n");
+	printf(" read_coils coilnumber count\n");
 	printf(" write_coil coilnumber value\n");
 	printf(" write_coils coilnumber value1:value2[:value3[...]]\n");
-	printf(" read_input_register registernumber value\n");
-	printf(" read_holding_register registernumber value\n");
+	printf(" read_input_register registernumber\n");
+	printf(" read_input_registers registernumber count\n");
+	printf(" read_holding_register registernumber\n");
+	printf(" read_holding_registers registernumber count\n");
 	printf(" write_registers registernumber value1:value2[:value3[...]]\n");
 	printf(" write_register registernumber value\n");
 	printf(" identification stringnumber\n");
