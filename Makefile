@@ -31,7 +31,6 @@
 # $Rev$
 #
 
-CXX = g++
 CFLAGS = -O2 -g -Wall -Wsystem-headers -Wno-format-y2k -Wno-uninitialized `libbwctmb-config --cflags`
 LDFLAGS = `libbwctmb-config --libs`
 
