@@ -36,6 +36,7 @@ LDFLAGS = `libbwctmb-config --libs`
 
 BIN = mb_tcpclient
 OBJ = mb_tcpclient.o
+BINDIR ?= /usr/local/sbin
 
 all: $(BIN)
 
@@ -47,3 +48,7 @@ $(BIN): $(OBJ)
 
 .cc.o:
 	$(CXX) $(CFLAGS) -c $<
+
+install:
+	mkdir -p $(BINDIR)
+	install $(BIN) $(BINDIR)
