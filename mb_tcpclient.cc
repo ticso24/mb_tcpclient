@@ -70,8 +70,7 @@ main(int argc, char *argv[]) {
 					usage();
 				number = atol(argv[0]);
 				count = atol(argv[1]);
-				SArray<bool> vals;
-				vals = mb.read_discrete_inputs(address, number, count);
+				auto vals = mb.read_discrete_inputs(address, number, count);
 				printf("%i@[%s]:%s inputs %i=",
 				    address, host.c_str(), port.c_str(), number);
 				for (i = 0; i <= vals.max; i++) {
@@ -87,7 +86,7 @@ main(int argc, char *argv[]) {
 				if (argc < 1)
 					usage();
 				number = atol(argv[0]);
-				bool res = mb.read_discrete_input(address, number);
+				auto res = mb.read_discrete_input(address, number);
 				printf("%i@[%s]:%s input %i=%i\n",
 				    address, host.c_str(), port.c_str(), number, res ? 1 : 0);
 				argc -= 1;
@@ -97,8 +96,7 @@ main(int argc, char *argv[]) {
 					usage();
 				number = atol(argv[0]);
 				count = atol(argv[1]);
-				SArray<bool> vals;
-				vals = mb.read_coils(address, number, count);
+				auto vals = mb.read_coils(address, number, count);
 				printf("%i@[%s]:%s coils %i=",
 				    address, host.c_str(), port.c_str(), number);
 				for (i = 0; i <= vals.max; i++) {
@@ -114,7 +112,7 @@ main(int argc, char *argv[]) {
 				if (argc < 1)
 					usage();
 				number = atol(argv[0]);
-				bool res = mb.read_coil(address, number);
+				auto res = mb.read_coil(address, number);
 				printf("%i@[%s]:%s coil %i=%i\n",
 				    address, host.c_str(), port.c_str(), number, res ? 1 : 0);
 				argc -= 1;
@@ -148,8 +146,7 @@ main(int argc, char *argv[]) {
 					usage();
 				number = atol(argv[0]);
 				count = atol(argv[1]);
-				SArray<uint16_t> vals;
-				vals = mb.read_input_registers(address, number, count);
+				auto vals = mb.read_input_registers(address, number, count);
 				printf("%i@[%s]:%s inputs %i=",
 				    address, host.c_str(), port.c_str(), number);
 				for (i = 0; i <= vals.max; i++) {
@@ -165,7 +162,7 @@ main(int argc, char *argv[]) {
 				if (argc < 1)
 					usage();
 				number = atol(argv[0]);
-				uint16_t res = mb.read_input_register(address, number);
+				auto res = mb.read_input_register(address, number);
 				printf("%i@[%s]:%s input %i=%i\n",
 				    address, host.c_str(), port.c_str(), number, res);
 				argc -= 1;
@@ -175,8 +172,7 @@ main(int argc, char *argv[]) {
 					usage();
 				number = atol(argv[0]);
 				count = atol(argv[1]);
-				SArray<uint16_t> vals;
-				vals = mb.read_holding_registers(address, number, count);
+				auto vals = mb.read_holding_registers(address, number, count);
 				printf("%i@[%s]:%s registers %i=",
 				    address, host.c_str(), port.c_str(), number);
 				for (i = 0; i <= vals.max; i++) {
@@ -192,7 +188,7 @@ main(int argc, char *argv[]) {
 				if (argc < 1)
 					usage();
 				number = atol(argv[0]);
-				uint16_t res = mb.read_holding_register(address, number);
+				auto res = mb.read_holding_register(address, number);
 				printf("%i@[%s]:%s register %i=%i\n",
 				    address, host.c_str(), port.c_str(), number, res);
 				argc -= 1;
