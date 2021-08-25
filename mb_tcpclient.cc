@@ -122,13 +122,10 @@ main(int argc, char *argv[]) {
 					usage();
 				number = atol(argv[0]);
 				SArray<bool> vals;
-				char *pos = argv[1];
-				char *tmpstr;
-				int i = 0;
-				while ((tmpstr = strsep(&pos, ":")) != NULL) {
-					if (*tmpstr != '\0') {
-						vals[i++] = atol(tmpstr);
-					}
+				String input = argv[1];
+				auto inputs = input.split(":");
+				for (int64_t i = 0; i <= inputs.max; i++) {
+					vals[i] = inputs[i].getll();
 				}
 				mb.write_coils(address, number, vals);
 				argc -= 2;
@@ -206,13 +203,10 @@ main(int argc, char *argv[]) {
 					usage();
 				number = atol(argv[0]);
 				SArray<uint16_t> vals;
-				char *pos = argv[1];
-				char *tmpstr;
-				int i = 0;
-				while ((tmpstr = strsep(&pos, ":")) != NULL) {
-					if (*tmpstr != '\0') {
-						vals[i++] = atol(tmpstr);
-					}
+				String input = argv[1];
+				auto inputs = input.split(":");
+				for (int64_t i = 0; i <= inputs.max; i++) {
+					vals[i] = inputs[i].getll();
 				}
 				mb.write_registers(address, number, vals);
 				argc -= 2;
