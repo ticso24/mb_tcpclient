@@ -61,8 +61,8 @@ main(int argc, char *argv[]) {
 			usage();
 		}
 	}
-	argc -= optind;
-	argv += optind;
+	argc -= optind - 1;
+	argv += optind - 1;
 
 	if (argc < 3)
 		usage();
