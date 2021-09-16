@@ -48,11 +48,28 @@ main(int argc, char *argv[]) {
 	String port;
 	String cmd;
 
+	bool ignore_sequence = false;
+
+	int ch;
+	while ((ch = getopt(argc, argv, "i")) != -1) {
+		switch (ch) {
+		case 'i':
+			ignore_sequence = true;
+			break;
+		case '?':
+			default:
+			usage();
+		}
+	}
+	argc -= optind;
+	argv += optind;
+
 	if (argc < 3)
 		usage();
 	host = argv[1];
 	port = argv[2];
 	Modbus mb(host, port);
+	mb.set_ignore_sequence(ignore_sequence);
 	argc -= 3;
 	argv += 3;
 
@@ -248,7 +265,7 @@ main(int argc, char *argv[]) {
 void
 usage(void) {
 
-	printf("usage: mb_tcpclient ip port slaveaddress cmd [cmddata] \n");
+	printf("usage: mb_tcpclient [-i] ip port slaveaddress cmd [cmddata] \n");
 	printf(" read_input inputnumber\n");
 	printf(" read_inputs inputnumber count\n");
 	printf(" read_coil coilnumber\n");
