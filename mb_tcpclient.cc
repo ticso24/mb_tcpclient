@@ -37,6 +37,28 @@
 int main(int argc, char *argv[]);
 void usage(void);
 
+float
+reg_to_f(uint16_t d0, uint16_t d1) {
+	union {
+		float f;
+		uint16_t i[2];
+	} t;
+	t.i[0] = d0;
+	t.i[1] = d1;
+	return t.f;
+}
+
+void
+f_to_reg(float data, uint16_t *d0, uint16_t *d1) {
+	union {
+		float f;
+		uint16_t i[2];
+	} t;
+	t.f = data;
+	*d0 = t.i[0];
+	*d1 = t.i[1];
+}
+
 int
 main(int argc, char *argv[]) {
 	uint8_t address;
@@ -47,6 +69,15 @@ main(int argc, char *argv[]) {
 	String host;
 	String port;
 	String cmd;
+
+	enum {
+		M_UINT16,
+		M_INT16,
+		M_LFLOAT,
+		M_HFLOAT
+	} mode;
+
+	mode = M_UINT16;
 
 	bool ignore_sequence = false;
 
@@ -74,8 +105,33 @@ main(int argc, char *argv[]) {
 	argv += 3;
 
 	while (argc > 0) {
-		if (argc < 2)
+
+		if (argc < 2) {
 			usage();
+		}
+
+		{
+			String x;
+			x = argv[0];
+			if (x == "-m") {
+				x = argv[1];
+				if (x == "uint16") {
+					mode = M_UINT16;
+				} else if (x == "int16") {
+					mode = M_INT16;
+				} else if (x == "lfloat") {
+					mode = M_LFLOAT;
+				} else if (x == "hfloat") {
+					mode = M_HFLOAT;
+				} else {
+					usage();
+				}
+				argc -= 2;
+				argv += 2;
+				continue;
+			}
+		}
+
 		address = atol(argv[0]);
 		cmd = argv[1];
 		argc -= 2;
@@ -164,7 +220,30 @@ main(int argc, char *argv[]) {
 				printf("%i@[%s]:%s inputs %i=",
 				    address, host.c_str(), port.c_str(), number);
 				for (i = 0; i <= vals.max; i++) {
-					printf("%i", vals[i]);
+					switch(mode) {
+						case M_UINT16:
+							printf("%i", (uint16_t)vals[i]);
+							break;
+						case M_INT16:
+							printf("%i", (int16_t)vals[i]);
+							break;
+						case M_LFLOAT:
+							if (i <= (vals.max + 1)) {
+								float x;
+								x = reg_to_f(vals[i], vals[i + 1]);
+								printf("%f", x);
+								i++;
+							}
+							break;
+						case M_HFLOAT:
+							if (i <= (vals.max + 1)) {
+								float x;
+								x = reg_to_f(vals[i + 1], vals[i]);
+								printf("%f", x);
+								i++;
+							}
+							break;
+					}
 					if (i != vals.max) {
 						printf(":");
 					}
@@ -176,9 +255,21 @@ main(int argc, char *argv[]) {
 				if (argc < 1)
 					usage();
 				number = atol(argv[0]);
+				printf("%i@[%s]:%s input %i=",
+				    address, host.c_str(), port.c_str(), number);
 				auto res = mb.read_input_register(address, number);
-				printf("%i@[%s]:%s input %i=%i\n",
-				    address, host.c_str(), port.c_str(), number, res);
+				switch(mode) {
+					case M_UINT16:
+						printf("%i", (uint16_t)res);
+						break;
+					case M_INT16:
+						printf("%i", (int16_t)res);
+						break;
+					case M_LFLOAT:
+					case M_HFLOAT:
+						break;
+				}
+				printf("\n");
 				argc -= 1;
 				argv += 1;
 			} else if (cmd == "read_holding_registers")  {
@@ -190,7 +281,30 @@ main(int argc, char *argv[]) {
 				printf("%i@[%s]:%s registers %i=",
 				    address, host.c_str(), port.c_str(), number);
 				for (i = 0; i <= vals.max; i++) {
-					printf("%i", vals[i]);
+					switch(mode) {
+						case M_UINT16:
+							printf("%i", vals[i]);
+							break;
+						case M_INT16:
+							printf("%i", (int16_t)vals[i]);
+							break;
+						case M_LFLOAT:
+							if (i <= (vals.max + 1)) {
+								float x;
+								x = reg_to_f(vals[i], vals[i + 1]);
+								printf("%f", x);
+								i++;
+							}
+							break;
+						case M_HFLOAT:
+							if (i <= (vals.max + 1)) {
+								float x;
+								x = reg_to_f(vals[i + 1], vals[i]);
+								printf("%f", x);
+								i++;
+							}
+							break;
+					}
 					if (i != vals.max) {
 						printf(":");
 					}
@@ -202,16 +316,39 @@ main(int argc, char *argv[]) {
 				if (argc < 1)
 					usage();
 				number = atol(argv[0]);
+				printf("%i@[%s]:%s input %i=",
+				    address, host.c_str(), port.c_str(), number);
 				auto res = mb.read_holding_register(address, number);
-				printf("%i@[%s]:%s register %i=%i\n",
-				    address, host.c_str(), port.c_str(), number, res);
+				switch(mode) {
+					case M_UINT16:
+						printf("%i", (uint16_t)res);
+						break;
+					case M_INT16:
+						printf("%i", (int16_t)res);
+						break;
+					case M_LFLOAT:
+					case M_HFLOAT:
+						break;
+				}
+				printf("\n");
 				argc -= 1;
 				argv += 1;
 			} else if (cmd == "write_register")  {
 				if (argc < 2)
 					usage();
 				number = atol(argv[0]);
-				val = atol(argv[1]);
+				val = 0;
+				switch(mode) {
+					case M_UINT16:
+						val = (uint16_t)atol(argv[1]);
+						break;
+					case M_INT16:
+						val = (int16_t)atol(argv[1]);
+						break;
+					case M_LFLOAT:
+					case M_HFLOAT:
+						break;
+				}
 				mb.write_register(address, number, val);
 				argc -= 2;
 				argv += 2;
@@ -223,7 +360,32 @@ main(int argc, char *argv[]) {
 				String input = argv[1];
 				auto inputs = input.split(":");
 				for (int64_t i = 0; i <= inputs.max; i++) {
-					vals[i] = inputs[i].getll();
+					switch(mode) {
+						case M_UINT16:
+							vals[vals.max + 1] = (uint16_t)inputs[i].getll();
+							break;
+						case M_INT16:
+							vals[vals.max + 1] = (int16_t)inputs[i].getll();
+							break;
+						case M_LFLOAT:
+							{
+								float x = inputs[i].getd();
+								uint16_t v[2];
+								f_to_reg(x, &v[0], &v[1]);
+								vals[vals.max + 1] = v[0];
+								vals[vals.max + 1] = v[1];
+							}
+							break;
+						case M_HFLOAT:
+							{
+								float x = inputs[i].getd();
+								uint16_t v[2];
+								f_to_reg(x, &v[0], &v[1]);
+								vals[vals.max + 1] = v[1];
+								vals[vals.max + 1] = v[0];
+							}
+							break;
+					}
 				}
 				mb.write_registers(address, number, vals);
 				argc -= 2;
@@ -265,7 +427,7 @@ main(int argc, char *argv[]) {
 void
 usage(void) {
 
-	printf("usage: mb_tcpclient [-i] ip port slaveaddress cmd [cmddata] \n");
+	printf("usage: mb_tcpclient [-i] ip port [-m mode] slaveaddress cmd [cmddata] \n");
 	printf(" read_input inputnumber\n");
 	printf(" read_inputs inputnumber count\n");
 	printf(" read_coil coilnumber\n");
