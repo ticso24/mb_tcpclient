@@ -1,2 +1,4 @@
 mb_tcpclient
-mb_tcpclient.o
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake

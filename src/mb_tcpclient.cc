@@ -33,6 +33,7 @@
  */
 
 #include <bwctmb/bwctmb.h>
+using namespace bwct;
 
 int main(int argc, char *argv[]);
 void usage(void);

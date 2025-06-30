@@ -9,7 +9,7 @@ For non TCP devices it is expected to run a bridge device or software, like the 
 [libbwctmb](https://github.com/ticso24/libbwctmb) are required
 
 ```sh
-make
+cmake .
 make install
 ```
 
