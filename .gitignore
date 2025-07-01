@@ -1,4 +1,6 @@
 mb_tcpclient
+Makefile
 CMakeCache.txt
+install_manifest.txt
 CMakeFiles/
 cmake_install.cmake
